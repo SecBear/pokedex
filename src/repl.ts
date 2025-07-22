@@ -2,44 +2,40 @@ import * as readline from "readline"
 import * as process from "process"
 import { commandHelp } from "./command_help.js"
 import { commandExit } from "./command_exit.js"
-import { getCommands } from "./commands.js"
+import { initState } from "./state.js"
  
 // split user input into words separated by whitespace
 export function cleanInput(str: string): string[] {
   return str.trim().toLowerCase().split(" ")
 }
 
-// Readline interface for I/O
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: 'Pokedex > ',
-})
+// Init state
+const state = initState()
 
 function handleInput(input: string) {
   const words = cleanInput(input)
-  const commands = getCommands()
+
   if (words.length === 0) {
-    rl.prompt()
+    state.rl.prompt()
     return
   }
   //console.log(`Your command was: ${words[0]}`)
   if (words.includes("help")) {
-    commandHelp(commands)
+    commandHelp(state)
   }
   if (words.includes("exit")) {
-    commandExit(commands)
+    commandExit(state)
   }
 
-  rl.prompt()
+  state.rl.prompt()
 }
 
 export function startREPL() {
   // display welcome message
   console.log("Welcome to the Pokedex!")
   // display the prompt
-  rl.prompt()  
+  state.rl.prompt()  
   // listen for input
-  rl.on("line", (input) => {handleInput(input)}) 
+  state.rl.on("line", (input) => {handleInput(input)}) 
 }
 
