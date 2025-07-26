@@ -1,11 +1,16 @@
 import { createInterface, type Interface } from "readline"
 import { commandExit } from './command_exit.js'
 import { commandHelp } from './command_help.js'
+import { commandMap } from './command_map.js'
+import { PokeAPI, } from "./pokeapi.js"
 
 export type State = {
   // should contain the readline interface and the commands registry
   rl: Interface,
   commands: Record<string, CLICommand>,
+  pokeAPI: PokeAPI,
+  nextLocationsURL: string,
+  prevLocationsURL: string,
 }
 
 // callback: (state: State) => void
@@ -13,7 +18,7 @@ type CLICommand = {
   name: string;
   description: string;
   // callback function includes state
-  callback: (state: State) => void // commands: Record<string, CLICommand>) => void;
+  callback: (state: State) => Promise<void> // commands: Record<string, CLICommand>) => void;
 }
 
 export function initState(): State {
@@ -29,13 +34,24 @@ export function initState(): State {
          description: "Displays a help message",
          callback: commandHelp,
        },
-       exit: {
-         name: "exit",
-         description: "Exits the pokedex",
-         callback: commandExit,
-       },
+      exit: {
+        name: "exit",
+        description: "Exits the pokedex",
+        callback: commandExit,
+      },
+      map: {
+        name: "map",
+        description: "Shows location",
+        callback: commandMap,
+      },
+
        // add more commands here
-    }
+    },
+    pokeAPI: new PokeAPI,
+    nextLocationsURL: "",
+    prevLocationsURL: "",
+    
+    // pointers to update as we go through locations
   }
   return state
 }

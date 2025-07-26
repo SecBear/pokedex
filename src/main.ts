@@ -1,6 +1,6 @@
 import { startREPL } from "./repl.js"
 
-function main() {
+async function main() {
   startREPL();
 }
 
