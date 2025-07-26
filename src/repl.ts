@@ -3,6 +3,7 @@ import * as process from "process"
 import { commandHelp } from "./command_help.js"
 import { commandExit } from "./command_exit.js"
 import { commandMap } from "./command_map.js"
+import { commandMapb } from "./command_mapb.js"
 import { initState } from "./state.js"
 
 // split user input into words separated by whitespace
@@ -29,6 +30,9 @@ async function handleInput(input: string) {
   }
   if (words.includes("map")) {
     commandMap(state)
+  }
+  if (words.includes("mapb")) {
+    commandMapb(state) 
   }
 
   state.rl.prompt()

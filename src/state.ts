@@ -2,6 +2,7 @@ import { createInterface, type Interface } from "readline"
 import { commandExit } from './command_exit.js'
 import { commandHelp } from './command_help.js'
 import { commandMap } from './command_map.js'
+import { commandMapb } from './command_mapb.js'
 import { PokeAPI, } from "./pokeapi.js"
 
 export type State = {
@@ -41,10 +42,14 @@ export function initState(): State {
       },
       map: {
         name: "map",
-        description: "Shows location",
+        description: "Shows Next Location",
         callback: commandMap,
       },
-
+      mapb: {
+        name: "mapb",
+        description: "Shows Previous location",
+        callback: commandMapb,
+      },
        // add more commands here
     },
     pokeAPI: new PokeAPI,
