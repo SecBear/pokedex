@@ -1,11 +1,21 @@
+import { Cache } from "./pokecache.js"
+
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
+  #cache: Cache
 
-  constructor() {}
+  constructor() {
+    this.#cache = new Cache(60000)
+  }
 
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
     const url = pageURL ? pageURL : `${PokeAPI.baseURL}/location-area/`
     let locations: ShallowLocations
+    // check if it exists in cache first
+    const cachedLocations: ShallowLocations | undefined = this.#cache.get(url)
+    if (cachedLocations !== undefined) {
+      return cachedLocations
+    }
     // fetch the location data
     try {
       const response = await fetch(url)
@@ -14,6 +24,8 @@ export class PokeAPI {
       }
       // convert this into a shallow locations type
       locations = await response.json()
+      // add to cache
+      this.#cache.add(url, locations)
       return locations // use the locations.next for the pageURL on the next invocation
     } catch (error) {
       if (error instanceof Error) {
@@ -67,3 +79,4 @@ export type Location = {
   name: string,
   url: string,
 };
+

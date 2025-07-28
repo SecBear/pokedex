@@ -4,6 +4,7 @@ pkgs.mkShell {
   packages = with pkgs; [
     nodePackages.nodejs
     nodePackages.pnpm
+    vscode-js-debug
   ];
 
   # Add environment variables
