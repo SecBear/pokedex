@@ -1,82 +1,105 @@
-import { Cache } from "./pokecache.js"
+import { Cache } from "./pokecache.js";
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
-  #cache: Cache
+  #cache: Cache;
 
   constructor() {
-    this.#cache = new Cache(60000)
+    this.#cache = new Cache(60000);
   }
 
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
-    const url = pageURL ? pageURL : `${PokeAPI.baseURL}/location-area/`
-    let locations: ShallowLocations
+    const url = pageURL ? pageURL : `${PokeAPI.baseURL}/location-area/`;
+    let locations: ShallowLocations;
+
     // check if it exists in cache first
-    const cachedLocations: ShallowLocations | undefined = this.#cache.get(url)
+    const cachedLocations: ShallowLocations | undefined = this.#cache.get(url);
     if (cachedLocations !== undefined) {
-      return cachedLocations
+      return cachedLocations;
     }
+
     // fetch the location data
     try {
-      const response = await fetch(url)
+      const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`)
+        throw new Error(`Response status: ${response.status}`);
       }
       // convert this into a shallow locations type
-      locations = await response.json()
-      // add to cache
-      this.#cache.add(url, locations)
-      return locations // use the locations.next for the pageURL on the next invocation
+      locations = await response.json();
+      this.#cache.add(url, locations); // add to cache
+      return locations; // use the locations.next for the pageURL on the next invocation
     } catch (error) {
       if (error instanceof Error) {
-        console.log(`Error fetching locationS: ${error.message}`)
+        console.log(`Error fetching locationS: ${error.message}`);
+      } else {
+        console.log(`Unknown error: ${error}`);
       }
-      else {
-        console.log(`Unknown error: ${error}`)
-      }      
+
       return {
         count: 0,
         next: "",
         previous: null,
-        results: [], 
-      }
+        results: [],
+      };
     }
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
-    // implement this
-    let location: Location
-    const url = `${PokeAPI.baseURL}/location/${locationName}`
+    const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
+
+    // check for cache first
+    const cachedLocation: Location | undefined = this.#cache.get(url);
+    if (cachedLocation !== undefined) {
+      return cachedLocation;
+    }
+
+    // not cached, fetch it
     try {
-      const response = await fetch(url)
-      return response.json()
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      const location = await response.json();
+      this.#cache.add(url, location); // add to cache
+      return location;
     } catch (error) {
       if (error instanceof Error) {
-        console.log(`Error fetching location: ${locationName} - ${error.message}`)
+        console.log(
+          `Error fetching location: ${locationName} - ${error.message}`,
+        );
+      } else {
+        console.log(`Unknown error: ${error}`);
       }
-      else {
-        console.log(`Unknown error: ${error}`)
-      }
+
       return {
         name: "",
         url: "",
-      }
+        pokemon_encounters: [],
+      };
     }
-    
   }
 }
 
 export type ShallowLocations = {
   // add properties here
-  count: number,
-  next: string,
-  previous: string | null
-  results: Location[],
+  count: number;
+  next: string;
+  previous: string | null;
+  results: Location[];
 };
 
 export type Location = {
   // add properties here
-  name: string,
-  url: string,
+  name: string;
+  url: string;
+  pokemon_encounters: Encounter[];
 };
 
+export type Pokemon = {
+  name: string;
+  url: string;
+};
+
+export type Encounter = {
+  pokemon: Pokemon;
+};
