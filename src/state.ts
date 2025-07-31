@@ -3,7 +3,11 @@ import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
+import { commandInspect } from "./command_inspect.js";
+import { commandCatch } from "./command_catch.js";
+import { commandPokedex } from "./command_pokedex.js";
 import { PokeAPI, Pokemon } from "./pokeapi.js";
+import { commandExplore } from "./command_explore.js";
 
 export type State = {
   // should contain the readline interface and the commands registry
@@ -20,7 +24,7 @@ type CLICommand = {
   name: string;
   description: string;
   // callback function includes state
-  callback: (state: State) => Promise<void>; // commands: Record<string, CLICommand>) => void;
+  callback: (state: State, ...args: any) => Promise<void>; // commands: Record<string, CLICommand>) => void;
 };
 
 export function initState(): State {
@@ -54,12 +58,22 @@ export function initState(): State {
       explore: {
         name: "explore",
         description: "Shows location's pokemon",
-        callback: commandMapb,
+        callback: commandExplore,
       },
       catch: {
         name: "catch",
         description: "Attempts to catch pokmeon",
-        callback: commandMapb,
+        callback: commandCatch,
+      },
+      inspect: {
+        name: "inspect",
+        description: "Examines a caught pokemon",
+        callback: commandInspect,
+      },
+      pokedex: {
+        name: "pokedex",
+        description: "Lists all caught pokemon",
+        callback: commandPokedex,
       },
       // add more commands here
     },

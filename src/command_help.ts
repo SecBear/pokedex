@@ -1,8 +1,8 @@
-import { State } from "./state.js"
+import { State } from "./state.js";
 
 export async function commandHelp(state: State): Promise<void> {
-  console.log("Usage:\n")
+  console.log("Usage:");
   for (const [name, command] of Object.entries(state.commands)) {
-    console.log(`${command.name}: ${command.description}`)
+    console.log(`${command.name}: ${command.description}`);
   }
 }
