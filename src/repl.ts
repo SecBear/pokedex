@@ -1,13 +1,14 @@
 import * as readline from "readline";
 import * as process from "process";
+import { initState } from "./state.js";
 import { commandHelp } from "./command_help.js";
 import { commandExit } from "./command_exit.js";
 import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
 import { commandCatch } from "./command_catch.js";
-import { initState } from "./state.js";
 import { commandInspect } from "./command_inspect.js";
+import { commandPokedex } from "./command_pokedex.js";
 
 // split user input into words separated by whitespace
 export function cleanInput(str: string): string[] {
@@ -45,6 +46,9 @@ async function handleInput(input: string) {
   }
   if (words.includes("inspect")) {
     await commandInspect(state, words[1]);
+  }
+  if (words.includes("pokedex")) {
+    await commandPokedex(state);
   }
 
   state.rl.prompt();
