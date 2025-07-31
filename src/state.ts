@@ -1,40 +1,41 @@
-import { createInterface, type Interface } from "readline"
-import { commandExit } from './command_exit.js'
-import { commandHelp } from './command_help.js'
-import { commandMap } from './command_map.js'
-import { commandMapb } from './command_mapb.js'
-import { PokeAPI, } from "./pokeapi.js"
+import { createInterface, type Interface } from "readline";
+import { commandExit } from "./command_exit.js";
+import { commandHelp } from "./command_help.js";
+import { commandMap } from "./command_map.js";
+import { commandMapb } from "./command_mapb.js";
+import { PokeAPI, Pokemon } from "./pokeapi.js";
 
 export type State = {
   // should contain the readline interface and the commands registry
-  rl: Interface,
-  commands: Record<string, CLICommand>,
-  pokeAPI: PokeAPI,
-  nextLocationsURL: string,
-  prevLocationsURL: string,
-}
+  rl: Interface;
+  commands: Record<string, CLICommand>;
+  pokeAPI: PokeAPI;
+  pokedex: Record<string, Pokemon>;
+  nextLocationsURL: string;
+  prevLocationsURL: string;
+};
 
 // callback: (state: State) => void
 type CLICommand = {
   name: string;
   description: string;
   // callback function includes state
-  callback: (state: State) => Promise<void> // commands: Record<string, CLICommand>) => void;
-}
+  callback: (state: State) => Promise<void>; // commands: Record<string, CLICommand>) => void;
+};
 
 export function initState(): State {
   const state: State = {
     rl: createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: 'Pokedex > ',
+      prompt: "Pokedex > ",
     }),
     commands: {
       help: {
-         name: "help",
-         description: "Displays a help message",
-         callback: commandHelp,
-       },
+        name: "help",
+        description: "Displays a help message",
+        callback: commandHelp,
+      },
       exit: {
         name: "exit",
         description: "Exits the pokedex",
@@ -50,13 +51,24 @@ export function initState(): State {
         description: "Shows Previous location",
         callback: commandMapb,
       },
-       // add more commands here
+      explore: {
+        name: "explore",
+        description: "Shows location's pokemon",
+        callback: commandMapb,
+      },
+      catch: {
+        name: "catch",
+        description: "Attempts to catch pokmeon",
+        callback: commandMapb,
+      },
+      // add more commands here
     },
-    pokeAPI: new PokeAPI,
+    pokeAPI: new PokeAPI(),
+    pokedex: {},
     nextLocationsURL: "",
     prevLocationsURL: "",
-    
+
     // pointers to update as we go through locations
-  }
-  return state
+  };
+  return state;
 }

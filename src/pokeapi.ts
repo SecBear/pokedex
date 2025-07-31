@@ -30,7 +30,9 @@ export class PokeAPI {
       return locations; // use the locations.next for the pageURL on the next invocation
     } catch (error) {
       if (error instanceof Error) {
-        console.log(`Error fetching locationS: ${error.message}`);
+        console.log(
+          `Error fetching locationS: ${error.message}\nAre you connected to VPN?`,
+        );
       } else {
         console.log(`Unknown error: ${error}`);
       }
@@ -78,6 +80,76 @@ export class PokeAPI {
       };
     }
   }
+
+  async catchPokemon(pokemonName: string): Promise<Pokemon> {
+    const url = `${PokeAPI.baseURL}/pokemon/${pokemonName}`;
+
+    // check for cache first
+    const cachedPokemon: Pokemon | undefined = this.#cache.get(url);
+    if (cachedPokemon !== undefined) {
+      return cachedPokemon;
+    }
+
+    // not cached, fetch it
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      const pokemon = await response.json();
+      this.#cache.add(url, pokemon); // add to cache
+
+      // difficulty of catch based on base exp
+      if (!(Math.random() > pokemon.base_experience / 100)) {
+        return {
+          name: "",
+          url: "",
+          base_experience: -1,
+          height: -1,
+          weight: -1,
+          stats: [
+            {
+              base_stat: -1,
+              effort: -1,
+              stat: {
+                id: "",
+                name: "",
+              },
+            },
+          ],
+          types: [],
+        };
+      }
+      return pokemon;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(
+          `Error fetching Pokemon: ${pokemonName} - ${error.message}`,
+        );
+      } else {
+        console.log(`Unknown error: ${error}`);
+      }
+
+      return {
+        name: "",
+        url: "",
+        base_experience: -1,
+        height: -1,
+        weight: -1,
+        stats: [
+          {
+            base_stat: -1,
+            effort: -1,
+            stat: {
+              id: "",
+              name: "",
+            },
+          },
+        ],
+        types: [],
+      };
+    }
+  }
 }
 
 export type ShallowLocations = {
@@ -96,6 +168,25 @@ export type Location = {
 };
 
 export type Pokemon = {
+  name: string;
+  url: string;
+  base_experience: number;
+  height: number;
+  weight: number;
+  stats: {
+    base_stat: number;
+    effort: number;
+    stat: Stat;
+  }[];
+  types: PokemonType[];
+};
+
+type Stat = {
+  id: string;
+  name: string;
+};
+
+type PokemonType = {
   name: string;
   url: string;
 };

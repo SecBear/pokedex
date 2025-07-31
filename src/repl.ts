@@ -5,7 +5,9 @@ import { commandExit } from "./command_exit.js";
 import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
+import { commandCatch } from "./command_catch.js";
 import { initState } from "./state.js";
+import { commandInspect } from "./command_inspect.js";
 
 // split user input into words separated by whitespace
 export function cleanInput(str: string): string[] {
@@ -37,6 +39,12 @@ async function handleInput(input: string) {
   }
   if (words.includes("explore")) {
     await commandExplore(state, words[1]);
+  }
+  if (words.includes("catch")) {
+    await commandCatch(state, words[1]);
+  }
+  if (words.includes("inspect")) {
+    await commandInspect(state, words[1]);
   }
 
   state.rl.prompt();
