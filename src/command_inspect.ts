@@ -17,8 +17,12 @@ export async function commandInspect(
       pokemon.stats.forEach((stat) => {
         console.log(`${stat.stat.name}: ${stat.base_stat}`);
       });
+      // types is a list
+      if (pokemon.types.length < 1) {
+        console.log(`types is empty`);
+      }
       pokemon.types.forEach((type) => {
-        console.log(`Type: ${type.name}`);
+        console.log(`Type: ${type.type.name}`);
       });
     } else {
       console.log("You have not caught that pokemon");

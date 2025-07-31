@@ -178,12 +178,17 @@ export type Pokemon = {
     effort: number;
     stat: Stat;
   }[];
-  types: PokemonType[];
+  types: PokemonTypeContainer[];
 };
 
 type Stat = {
   id: string;
   name: string;
+};
+
+type PokemonTypeContainer = {
+  slot: number;
+  type: PokemonType;
 };
 
 type PokemonType = {
