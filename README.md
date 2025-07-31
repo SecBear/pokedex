@@ -15,8 +15,8 @@ cache for API calls.
 ## Getting Started
 
 1. Clone the repository
-2. Install dependencies (if any)
-3. Run the game
+2. Install dependencies via `nix-shell` and `npm install`
+3. Run the game with `npm run start`
 
 ## Commands
 
