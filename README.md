@@ -24,5 +24,6 @@ cache for API calls.
 - `catch <pokemon>` - Try to catch a Pokemon
 - `inspect <pokemon>` - View details of a caught Pokemon
 - `pokedex` - List all caught Pokemon
+- `map` - Continue to the next area
 - `help` - Show all available commands
 
